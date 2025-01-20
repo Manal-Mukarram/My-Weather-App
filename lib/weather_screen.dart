@@ -67,20 +67,71 @@ class WeatherScreen extends StatelessWidget {
                 ),
               ),
             ),
+
             // ***** SMALL CARDS ******
-            const SizedBox(
-              height: 30,
+            Container(
+              padding: const EdgeInsets.fromLTRB(0, 30, 0, 15),
+              alignment: Alignment.bottomLeft,
+              child: const Text('Weather Forecast'),
             ),
-            Placeholder(
-              fallbackHeight: 150,
-            ),
-            SizedBox(
-              height: 30,
+            const SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  // ** small cards **
+                  SmallCard(),
+                  SmallCard(),
+                  SmallCard(),
+                  SmallCard(),
+                  SmallCard(),
+                  SmallCard(),
+                  SmallCard(),
+                ],
+              ),
             ),
             // ***** ADDITIONAL INFO *****
             Placeholder(
               fallbackHeight: 150,
             )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SmallCard extends StatelessWidget {
+  const SmallCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 6,
+      child: Container(
+        width: 125,
+        padding: const EdgeInsets.all(10),
+        child: const Column(
+          children: [
+            Text(
+              '03:00',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Icon(
+              Icons.cloud,
+              size: 30,
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+              '30°C',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
           ],
         ),
       ),
