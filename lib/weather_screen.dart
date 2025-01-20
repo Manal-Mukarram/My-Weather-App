@@ -74,25 +74,83 @@ class WeatherScreen extends StatelessWidget {
               alignment: Alignment.bottomLeft,
               child: const Text('Weather Forecast'),
             ),
-            const SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  // ** small cards **
-                  SmallCard(),
-                  SmallCard(),
-                  SmallCard(),
-                  SmallCard(),
-                  SmallCard(),
-                  SmallCard(),
-                  SmallCard(),
-                ],
+            const Align(
+              alignment: Alignment.bottomLeft,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    // ** small cards **
+                    SmallCard(),
+                    SmallCard(),
+                    SmallCard(),
+                    SmallCard(),
+                    SmallCard(),
+                    SmallCard(),
+                    SmallCard(),
+                  ],
+                ),
               ),
             ),
             // ***** ADDITIONAL INFO *****
-            Placeholder(
-              fallbackHeight: 150,
-            )
+            Container(
+              padding: const EdgeInsets.fromLTRB(0, 30, 0, 15),
+              alignment: Alignment.bottomLeft,
+              child: const Text('Weather Forecast'),
+            ),
+            const Align(
+                alignment: Alignment.bottomLeft,
+                child: Row(
+                  children: [
+                    // HUMIDITY
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Icon(Icons.water_drop_rounded),
+                          Text(
+                            'Humidity',
+                          ),
+                          Text(
+                            '94',
+                            style: TextStyle(fontSize: 25),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // WIND SPEED
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Icon(Icons.air_rounded),
+                          Text(
+                            'Wind Speed',
+                          ),
+                          Text(
+                            '7.67',
+                            style: TextStyle(fontSize: 25),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // PRESSURE
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Icon(Icons.speed),
+                          Text(
+                            'Pressure',
+                          ),
+                          Text(
+                            '1004',
+                            style: TextStyle(fontSize: 25),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ))
           ],
         ),
       ),
