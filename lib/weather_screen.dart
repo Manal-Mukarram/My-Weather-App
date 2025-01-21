@@ -1,9 +1,30 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:weather_app/secrets.dart';
 
-class WeatherScreen extends StatelessWidget {
+class WeatherScreen extends StatefulWidget {
   const WeatherScreen({super.key});
+
+  @override
+  State<WeatherScreen> createState() => _WeatherScreenState();
+}
+
+class _WeatherScreenState extends State<WeatherScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getCurrentWeather();
+  }
+
+  Future getCurrentWeather() async {
+    String cityName = "London";
+    final result = await http.get(
+      Uri.parse(
+          'http://api.openweathermap.org/data/2.5/weather?q=$cityName&APPID=$openWeatherAPIkey'),
+    );
+    print(result.body);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +64,7 @@ class WeatherScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(
-                            '30 °C',
+                            '30°C',
                             style: TextStyle(
                               fontSize: 30,
                               fontWeight: FontWeight.bold,
@@ -81,13 +102,41 @@ class WeatherScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     // ** small cards **
-                    SmallCard(),
-                    SmallCard(),
-                    SmallCard(),
-                    SmallCard(),
-                    SmallCard(),
-                    SmallCard(),
-                    SmallCard(),
+                    SmallCard(
+                      time: '3:00',
+                      icon: Icons.cloud,
+                      temperature: '30°C',
+                    ),
+                    SmallCard(
+                      time: '3:00',
+                      icon: Icons.cloud,
+                      temperature: '30°C',
+                    ),
+                    SmallCard(
+                      time: '3:00',
+                      icon: Icons.cloud,
+                      temperature: '30°C',
+                    ),
+                    SmallCard(
+                      time: '3:00',
+                      icon: Icons.cloud,
+                      temperature: '30°C',
+                    ),
+                    SmallCard(
+                      time: '3:00',
+                      icon: Icons.cloud,
+                      temperature: '30°C',
+                    ),
+                    SmallCard(
+                      time: '3:00',
+                      icon: Icons.cloud,
+                      temperature: '30°C',
+                    ),
+                    SmallCard(
+                      time: '3:00',
+                      icon: Icons.cloud,
+                      temperature: '30°C',
+                    ),
                   ],
                 ),
               ),
@@ -124,7 +173,14 @@ class WeatherScreen extends StatelessWidget {
 // *** WEATHER FORECAST or SMALL CARD CLASS ***
 
 class SmallCard extends StatelessWidget {
-  const SmallCard({super.key});
+  final String time;
+  final IconData icon;
+  final String temperature;
+  const SmallCard(
+      {super.key,
+      required this.icon,
+      required this.time,
+      required this.temperature});
 
   @override
   Widget build(BuildContext context) {
@@ -133,25 +189,25 @@ class SmallCard extends StatelessWidget {
       child: Container(
         width: 125,
         padding: const EdgeInsets.all(10),
-        child: const Column(
+        child: Column(
           children: [
             Text(
-              '03:00',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              time,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Icon(
-              Icons.cloud,
+              icon,
               size: 30,
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Text(
-              '30°C',
-              style: TextStyle(
+              temperature,
+              style: const TextStyle(
                 fontSize: 16,
               ),
             ),
