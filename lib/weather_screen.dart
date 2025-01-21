@@ -102,53 +102,16 @@ class WeatherScreen extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 child: Row(
                   children: [
-                    // HUMIDITY
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Icon(Icons.water_drop_rounded),
-                          Text(
-                            'Humidity',
-                          ),
-                          Text(
-                            '94',
-                            style: TextStyle(fontSize: 25),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // WIND SPEED
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Icon(Icons.air_rounded),
-                          Text(
-                            'Wind Speed',
-                          ),
-                          Text(
-                            '7.67',
-                            style: TextStyle(fontSize: 25),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // PRESSURE
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Icon(Icons.speed),
-                          Text(
-                            'Pressure',
-                          ),
-                          Text(
-                            '1004',
-                            style: TextStyle(fontSize: 25),
-                          ),
-                        ],
-                      ),
-                    ),
+                    AdditionalInfoBox(
+                        icon: Icons.water_drop_rounded,
+                        label: 'Humidity',
+                        value: '94'),
+                    AdditionalInfoBox(
+                        icon: Icons.air_rounded,
+                        label: 'Wind Speed',
+                        value: '7.67'),
+                    AdditionalInfoBox(
+                        icon: Icons.speed, label: 'Pressure', value: '1004')
                   ],
                 ))
           ],
@@ -157,6 +120,8 @@ class WeatherScreen extends StatelessWidget {
     );
   }
 }
+
+// *** WEATHER FORECAST or SMALL CARD CLASS ***
 
 class SmallCard extends StatelessWidget {
   const SmallCard({super.key});
@@ -192,6 +157,41 @@ class SmallCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// *** ADDITIONAL INFO BOX CLASS ***
+
+class AdditionalInfoBox extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const AdditionalInfoBox(
+      {super.key,
+      required this.icon,
+      required this.label,
+      required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(
+            icon,
+            size: 32,
+          ),
+          Text(
+            label,
+          ),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 25),
+          ),
+        ],
       ),
     );
   }
