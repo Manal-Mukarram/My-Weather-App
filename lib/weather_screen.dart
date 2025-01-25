@@ -12,20 +12,8 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  double temp = 0;
-  bool isLoading = false;
-
-  @override
-  void initState() {
-    super.initState();
-    getCurrentWeather();
-  }
-
   Future getCurrentWeather() async {
     try {
-      setState(() {
-        isLoading = true;
-      });
       String cityName = "London";
       final result = await http.get(
         Uri.parse(
@@ -35,12 +23,8 @@ class _WeatherScreenState extends State<WeatherScreen> {
       if (data['cod'] != 200) {
         throw 'An unexpected error occured';
       }
-      setState(
-        () {
-          temp = data['main']['temp'];
-          isLoading = false;
-        },
-      );
+      // temp = data['main']['temp'];
+      return data;
     } catch (e) {
       throw e.toString();
     }
@@ -61,140 +45,141 @@ class _WeatherScreenState extends State<WeatherScreen> {
           IconButton(
             onPressed: () {
               setState(() {
-                // weather = getCurrentWeather();;
+                getCurrentWeather();
               });
             },
             icon: const Icon(Icons.refresh_rounded),
           )
         ],
       ),
-      body: isLoading == true
-          ? const CircularProgressIndicator()
-          : Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Column(
-                children: [
-                  // ***** MAIN CARD *****
-                  SizedBox(
-                    width:
-                        double.infinity, // to take the complete space on screen
-                    child: Card(
-                      elevation: 10,
-                      child: ClipRRect(
-                        // creates 3D effect for the card
-                        borderRadius: BorderRadius.circular(16),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                          child: Padding(
-                            padding: const EdgeInsets.fromLTRB(
-                                0, 15, 0, 15), // for top-bottom
-                            child: Column(
-                              children: [
-                                Text(
-                                  '$temp °C',
-                                  style: const TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+      body: FutureBuilder(
+        future: getCurrentWeather(),
+        builder: (context, snapshot) {
+          return Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Column(
+              children: [
+                // ***** MAIN CARD *****
+                SizedBox(
+                  width:
+                      double.infinity, // to take the complete space on screen
+                  child: Card(
+                    elevation: 10,
+                    child: ClipRRect(
+                      // creates 3D effect for the card
+                      borderRadius: BorderRadius.circular(16),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                              0, 15, 0, 15), // for top-bottom
+                          child: Column(
+                            children: [
+                              Text(
+                                '. °C',
+                                style: const TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                const Icon(
-                                  Icons.cloud,
-                                  size: 65,
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                ),
-                                const Text('Raining'),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Icon(
+                                Icons.cloud,
+                                size: 65,
+                              ),
+                              const SizedBox(
+                                height: 20,
+                              ),
+                              const Text('Raining'),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ),
+                ),
 
-                  // ***** SMALL CARDS ******
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 15),
-                    alignment: Alignment.bottomLeft,
-                    child: const Text('Weather Forecast'),
-                  ),
-                  const Align(
-                    alignment: Alignment.bottomLeft,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          // ** small cards **
-                          SmallCard(
-                            time: '3:00',
-                            icon: Icons.cloud,
-                            temperature: '30°C',
-                          ),
-                          SmallCard(
-                            time: '3:00',
-                            icon: Icons.cloud,
-                            temperature: '30°C',
-                          ),
-                          SmallCard(
-                            time: '3:00',
-                            icon: Icons.cloud,
-                            temperature: '30°C',
-                          ),
-                          SmallCard(
-                            time: '3:00',
-                            icon: Icons.cloud,
-                            temperature: '30°C',
-                          ),
-                          SmallCard(
-                            time: '3:00',
-                            icon: Icons.cloud,
-                            temperature: '30°C',
-                          ),
-                          SmallCard(
-                            time: '3:00',
-                            icon: Icons.cloud,
-                            temperature: '30°C',
-                          ),
-                          SmallCard(
-                            time: '3:00',
-                            icon: Icons.cloud,
-                            temperature: '30°C',
-                          ),
-                        ],
-                      ),
+                // ***** SMALL CARDS ******
+                Container(
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 15),
+                  alignment: Alignment.bottomLeft,
+                  child: const Text('Weather Forecast'),
+                ),
+                const Align(
+                  alignment: Alignment.bottomLeft,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        // ** small cards **
+                        SmallCard(
+                          time: '3:00',
+                          icon: Icons.cloud,
+                          temperature: '30°C',
+                        ),
+                        SmallCard(
+                          time: '3:00',
+                          icon: Icons.cloud,
+                          temperature: '30°C',
+                        ),
+                        SmallCard(
+                          time: '3:00',
+                          icon: Icons.cloud,
+                          temperature: '30°C',
+                        ),
+                        SmallCard(
+                          time: '3:00',
+                          icon: Icons.cloud,
+                          temperature: '30°C',
+                        ),
+                        SmallCard(
+                          time: '3:00',
+                          icon: Icons.cloud,
+                          temperature: '30°C',
+                        ),
+                        SmallCard(
+                          time: '3:00',
+                          icon: Icons.cloud,
+                          temperature: '30°C',
+                        ),
+                        SmallCard(
+                          time: '3:00',
+                          icon: Icons.cloud,
+                          temperature: '30°C',
+                        ),
+                      ],
                     ),
                   ),
-                  // ***** ADDITIONAL INFO *****
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 15),
+                ),
+                // ***** ADDITIONAL INFO *****
+                Container(
+                  padding: const EdgeInsets.fromLTRB(0, 30, 0, 15),
+                  alignment: Alignment.bottomLeft,
+                  child: const Text('Weather Forecast'),
+                ),
+                const Align(
                     alignment: Alignment.bottomLeft,
-                    child: const Text('Weather Forecast'),
-                  ),
-                  const Align(
-                      alignment: Alignment.bottomLeft,
-                      child: Row(
-                        children: [
-                          AdditionalInfoBox(
-                              icon: Icons.water_drop_rounded,
-                              label: 'Humidity',
-                              value: '94'),
-                          AdditionalInfoBox(
-                              icon: Icons.air_rounded,
-                              label: 'Wind Speed',
-                              value: '7.67'),
-                          AdditionalInfoBox(
-                              icon: Icons.speed,
-                              label: 'Pressure',
-                              value: '1004')
-                        ],
-                      ))
-                ],
-              ),
+                    child: Row(
+                      children: [
+                        AdditionalInfoBox(
+                            icon: Icons.water_drop_rounded,
+                            label: 'Humidity',
+                            value: '94'),
+                        AdditionalInfoBox(
+                            icon: Icons.air_rounded,
+                            label: 'Wind Speed',
+                            value: '7.67'),
+                        AdditionalInfoBox(
+                            icon: Icons.speed, label: 'Pressure', value: '1004')
+                      ],
+                    ))
+              ],
             ),
+          );
+        },
+      ),
     );
   }
 }
