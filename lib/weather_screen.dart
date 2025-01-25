@@ -12,18 +12,26 @@ class WeatherScreen extends StatefulWidget {
 }
 
 class _WeatherScreenState extends State<WeatherScreen> {
-  Future getCurrentWeather() async {
+  Future<Map<String, dynamic>> getCurrentWeather() async {
     try {
       String cityName = "London";
       final result = await http.get(
         Uri.parse(
-            'http://api.openweathermap.org/data/2.5/weather?q=$cityName&APPID=$openWeatherAPIkey&units=metric'),
+          'http://api.openweathermap.org/data/2.5/forecast?q=$cityName&APPID=$openWeatherAPIkey&units=metric',
+        ),
       );
       final data = jsonDecode(result.body);
-      if (data['cod'] != 200) {
-        throw 'An unexpected error occured';
+
+      // Check for a successful response
+      if (data['cod'] != '200') {
+        throw 'An unexpected error occurred';
       }
-      // temp = data['main']['temp'];
+
+      // Ensure that the list is not empty
+      if (data['list'] == null || data['list'].isEmpty) {
+        throw 'No forecast data available';
+      }
+
       return data;
     } catch (e) {
       throw e.toString();
@@ -33,7 +41,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ***** HEADER *****
       appBar: AppBar(
         title: const Text(
           'Weather App',
@@ -41,7 +48,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
         ),
         centerTitle: true,
         actions: [
-          // actions are used for navigation properties such as profile or settings
           IconButton(
             onPressed: () {
               setState(() {
@@ -55,6 +61,26 @@ class _WeatherScreenState extends State<WeatherScreen> {
       body: FutureBuilder(
         future: getCurrentWeather(),
         builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator.adaptive());
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                snapshot.error.toString(),
+              ),
+            );
+          }
+
+          final data = snapshot.data!;
+
+          final currentTemp = data['list'][0]['main']['temp'];
+          final currentTempText = data['list'][0]['weather'][0]['main'];
+          final pressure = data['list'][0]['main']['pressure'];
+          final humidity = data['list'][0]['main']['humidity'];
+          final windSpeed = data['list'][0]['wind']['speed'];
+
           return Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(
@@ -76,7 +102,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
                           child: Column(
                             children: [
                               Text(
-                                '. °C',
+                                '$currentTemp°C',
                                 style: const TextStyle(
                                   fontSize: 30,
                                   fontWeight: FontWeight.bold,
@@ -85,14 +111,17 @@ class _WeatherScreenState extends State<WeatherScreen> {
                               const SizedBox(
                                 height: 20,
                               ),
-                              const Icon(
-                                Icons.cloud,
+                              Icon(
+                                currentTempText == 'Clouds' ||
+                                        currentTempText == 'Rain'
+                                    ? Icons.cloud
+                                    : Icons.sunny,
                                 size: 65,
                               ),
                               const SizedBox(
                                 height: 20,
                               ),
-                              const Text('Raining'),
+                              Text('$currentTempText'),
                             ],
                           ),
                         ),
@@ -105,76 +134,56 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(0, 30, 0, 15),
                   alignment: Alignment.bottomLeft,
-                  child: const Text('Weather Forecast'),
+                  child: const Text('Hourly Forecast'),
                 ),
-                const Align(
+                Align(
                   alignment: Alignment.bottomLeft,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
                         // ** small cards **
-                        SmallCard(
-                          time: '3:00',
-                          icon: Icons.cloud,
-                          temperature: '30°C',
-                        ),
-                        SmallCard(
-                          time: '3:00',
-                          icon: Icons.cloud,
-                          temperature: '30°C',
-                        ),
-                        SmallCard(
-                          time: '3:00',
-                          icon: Icons.cloud,
-                          temperature: '30°C',
-                        ),
-                        SmallCard(
-                          time: '3:00',
-                          icon: Icons.cloud,
-                          temperature: '30°C',
-                        ),
-                        SmallCard(
-                          time: '3:00',
-                          icon: Icons.cloud,
-                          temperature: '30°C',
-                        ),
-                        SmallCard(
-                          time: '3:00',
-                          icon: Icons.cloud,
-                          temperature: '30°C',
-                        ),
-                        SmallCard(
-                          time: '3:00',
-                          icon: Icons.cloud,
-                          temperature: '30°C',
-                        ),
+                        for (int i = 0; i < 39; i++)
+                          SmallCard(
+                            time: data['list'][i + 1]['dt'].toString(),
+                            icon: data['list'][i + 1]['weather'][0]['main'] ==
+                                        'Clouds' ||
+                                    data['list'][i + 1]['weather'][0]['main'] ==
+                                        'Rain'
+                                ? Icons.cloud
+                                : Icons.sunny,
+                            temperature: '30°C',
+                          ),
                       ],
                     ),
                   ),
                 ),
+
                 // ***** ADDITIONAL INFO *****
                 Container(
                   padding: const EdgeInsets.fromLTRB(0, 30, 0, 15),
                   alignment: Alignment.bottomLeft,
-                  child: const Text('Weather Forecast'),
+                  child: const Text('Additional Information'),
                 ),
-                const Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Row(
-                      children: [
-                        AdditionalInfoBox(
-                            icon: Icons.water_drop_rounded,
-                            label: 'Humidity',
-                            value: '94'),
-                        AdditionalInfoBox(
-                            icon: Icons.air_rounded,
-                            label: 'Wind Speed',
-                            value: '7.67'),
-                        AdditionalInfoBox(
-                            icon: Icons.speed, label: 'Pressure', value: '1004')
-                      ],
-                    ))
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Row(
+                    children: [
+                      AdditionalInfoBox(
+                          icon: Icons.water_drop_rounded,
+                          label: 'Humidity',
+                          value: '$humidity'),
+                      AdditionalInfoBox(
+                          icon: Icons.air_rounded,
+                          label: 'Wind Speed',
+                          value: '$windSpeed'),
+                      AdditionalInfoBox(
+                          icon: Icons.speed,
+                          label: 'Pressure',
+                          value: '$pressure')
+                    ],
+                  ),
+                )
               ],
             ),
           );
@@ -190,6 +199,7 @@ class SmallCard extends StatelessWidget {
   final String time;
   final IconData icon;
   final String temperature;
+
   const SmallCard(
       {super.key,
       required this.icon,
