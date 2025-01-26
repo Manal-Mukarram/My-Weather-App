@@ -136,26 +136,47 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   alignment: Alignment.bottomLeft,
                   child: const Text('Hourly Forecast'),
                 ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: SingleChildScrollView(
+                // Align(
+                //   alignment: Alignment.bottomLeft,
+                //   child: SingleChildScrollView(
+                //     scrollDirection: Axis.horizontal,
+                //     child: Row(
+                //       children: [
+                //         // ** small cards **
+                //         for (int i = 0; i < 39; i++)
+                //           SmallCard(
+                //             time: data['list'][i + 1]['dt'].toString(),
+                //             icon: data['list'][i + 1]['weather'][0]['main'] ==
+                //                         'Clouds' ||
+                //                     data['list'][i + 1]['weather'][0]['main'] ==
+                //                         'Rain'
+                //                 ? Icons.cloud
+                //                 : Icons.sunny,
+                //             temperature: '30°C',
+                //           ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+
+                SizedBox(
+                  height: 120,
+                  child: ListView.builder(
+                    itemCount: 5,
                     scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        // ** small cards **
-                        for (int i = 0; i < 39; i++)
-                          SmallCard(
-                            time: data['list'][i + 1]['dt'].toString(),
-                            icon: data['list'][i + 1]['weather'][0]['main'] ==
-                                        'Clouds' ||
-                                    data['list'][i + 1]['weather'][0]['main'] ==
-                                        'Rain'
-                                ? Icons.cloud
-                                : Icons.sunny,
-                            temperature: '30°C',
-                          ),
-                      ],
-                    ),
+                    itemBuilder: (context, index) {
+                      return SmallCard(
+                        icon: data['list'][index + 1]['weather'][0]['main'] ==
+                                    'Clouds' ||
+                                data['list'][index + 1]['weather'][0]['main'] ==
+                                    'Rain'
+                            ? Icons.cloud
+                            : Icons.sunny,
+                        time: data['list'][index + 1]['dt_txt'].toString(),
+                        temperature:
+                            data['list'][index + 1]['main']['temp'].toString(),
+                      );
+                    },
                   ),
                 ),
 
@@ -193,7 +214,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   }
 }
 
-// *** WEATHER FORECAST or SMALL CARD CLASS ***
+// *** HOURLY FORECAST or SMALL CARD CLASS ***
 
 class SmallCard extends StatelessWidget {
   final String time;
@@ -218,6 +239,9 @@ class SmallCard extends StatelessWidget {
             Text(
               time,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow
+                  .ellipsis, // if text overflows, ... is used to end the text
             ),
             const SizedBox(
               height: 8,
