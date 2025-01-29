@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:weather_app/secrets.dart';
 
 class WeatherScreen extends StatefulWidget {
@@ -136,29 +137,6 @@ class _WeatherScreenState extends State<WeatherScreen> {
                   alignment: Alignment.bottomLeft,
                   child: const Text('Hourly Forecast'),
                 ),
-                // Align(
-                //   alignment: Alignment.bottomLeft,
-                //   child: SingleChildScrollView(
-                //     scrollDirection: Axis.horizontal,
-                //     child: Row(
-                //       children: [
-                //         // ** small cards **
-                //         for (int i = 0; i < 39; i++)
-                //           SmallCard(
-                //             time: data['list'][i + 1]['dt'].toString(),
-                //             icon: data['list'][i + 1]['weather'][0]['main'] ==
-                //                         'Clouds' ||
-                //                     data['list'][i + 1]['weather'][0]['main'] ==
-                //                         'Rain'
-                //                 ? Icons.cloud
-                //                 : Icons.sunny,
-                //             temperature: '30°C',
-                //           ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-
                 SizedBox(
                   height: 120,
                   child: ListView.builder(
@@ -166,14 +144,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
                     itemCount: 5,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
+                      final time =
+                          DateTime.parse(data['list'][index + 1]['dt_txt']);
                       return SmallCard(
+                        time: DateFormat.j().format(time),
                         icon: data['list'][index + 1]['weather'][0]['main'] ==
                                     'Clouds' ||
                                 data['list'][index + 1]['weather'][0]['main'] ==
                                     'Rain'
                             ? Icons.cloud
                             : Icons.sunny,
-                        time: data['list'][index + 1]['dt_txt'].toString(),
                         temperature:
                             data['list'][index + 1]['main']['temp'].toString(),
                       );
@@ -301,6 +281,3 @@ class AdditionalInfoBox extends StatelessWidget {
     );
   }
 }
-
-
-// laptop charger fail, fail day 2
